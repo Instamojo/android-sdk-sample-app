@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Android SDK Sample</string>
+    <string name="card_number">Card Number</string>
+    <string name="mm_yy">MM/yy</string>
+    <string name="card_holders_name">Name</string>
+    <string name="cvv">CVV</string>
+    <string name="net_banking">Net banking</string>
+    <string name="proceed">Proceed with Card</string>
+</resources>
