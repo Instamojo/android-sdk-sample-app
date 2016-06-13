@@ -33,7 +33,8 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
-
+    
+    // accessToken is Private Auth Token provided at https://www.instamojo.com/integrations/
     private String accessToken = "wLd5A00ZwskdBhIlGNuFSx5LyhrjpC";
     private Random random = new Random(System.currentTimeMillis());
     private ProgressDialog dialog;
@@ -103,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (!order.isValidAmount()) {
-                amountBox.setError("Amount is invalid");
+                amountBox.setError("Amount is invalid or has more than two decimal places");
             }
 
             if (!order.isValidDescription()) {
@@ -218,6 +219,8 @@ public class MainActivity extends AppCompatActivity {
             dialog.show();
         }
         OkHttpClient client = new OkHttpClient();
+        
+        // Both client_id and client_secret must be used given from Instamojo
         RequestBody body = new FormBody.Builder()
                 .add("grant_type", "client_credentials")
                 .add("client_id", "cNrgex0RQ3P176F0jCjFfEyCy2UnXjunM1AZCIT8")
