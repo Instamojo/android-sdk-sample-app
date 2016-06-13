@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         String amount = amountBox.getText().toString();
         String description = descriptionBox.getText().toString();
 
-        //this s only for testing. Actual transaciton_id must be fetched from the server
+        //this is only for testing. Actual transaciton_id must be fetched from the server
         String transactionID = String.valueOf(random.nextInt());
 
         //Create the Order
@@ -219,8 +219,9 @@ public class MainActivity extends AppCompatActivity {
             dialog.show();
         }
         OkHttpClient client = new OkHttpClient();
-        
-        // Both client_id and client_secret must be used given from Instamojo
+
+        // Both client_id and client_secret should be associated with your Instamojo's user account
+        //The client ID and client secret used here should not be used on your application
         RequestBody body = new FormBody.Builder()
                 .add("grant_type", "client_credentials")
                 .add("client_id", "cNrgex0RQ3P176F0jCjFfEyCy2UnXjunM1AZCIT8")
