@@ -58,10 +58,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Button button = (Button) findViewById(R.id.pay);
         nameBox = (AppCompatEditText) findViewById(R.id.name);
+        nameBox.setSelection(nameBox.getText().toString().trim().length());
         emailBox = (AppCompatEditText) findViewById(R.id.email);
+        emailBox.setSelection(emailBox.getText().toString().trim().length());
         phoneBox = (AppCompatEditText) findViewById(R.id.phone);
+        phoneBox.setSelection(phoneBox.getText().toString().trim().length());
         amountBox = (AppCompatEditText) findViewById(R.id.amount);
+        amountBox.setSelection(amountBox.getText().toString().trim().length());
         descriptionBox = (AppCompatEditText) findViewById(R.id.description);
+        descriptionBox.setSelection(descriptionBox.getText().toString().trim().length());
         AppCompatSpinner envSpinner = (AppCompatSpinner) findViewById(R.id.env_spinner);
         final ArrayList<String> envs = new ArrayList<>(env_options.keySet());
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, envs);
