@@ -5,8 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatSpinner;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -23,6 +26,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 import okhttp3.Call;
@@ -33,12 +38,18 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
-    
+
+    private static final HashMap<String, String> env_options = new HashMap<>();
+
+    static {
+        env_options.put("Test Environment", "https://test.instamojo.com/");
+        env_options.put("Production Environment", "https://api.instamojo.com/");
+    }
+
     // accessToken is Private Auth Token provided at https://www.instamojo.com/integrations/
     private String accessToken = "wLd5A00ZwskdBhIlGNuFSx5LyhrjpC";
     private Random random = new Random(System.currentTimeMillis());
     private ProgressDialog dialog;
-
     private AppCompatEditText nameBox, emailBox, phoneBox, amountBox, descriptionBox;
 
     @Override
@@ -51,6 +62,23 @@ public class MainActivity extends AppCompatActivity {
         phoneBox = (AppCompatEditText) findViewById(R.id.phone);
         amountBox = (AppCompatEditText) findViewById(R.id.amount);
         descriptionBox = (AppCompatEditText) findViewById(R.id.description);
+        AppCompatSpinner envSpinner = (AppCompatSpinner) findViewById(R.id.env_spinner);
+        final ArrayList<String> envs = new ArrayList<>(env_options.keySet());
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, envs);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        envSpinner.setAdapter(adapter);
+        envSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Instamojo.setBaseUrl(env_options.get(envs.get(position)));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         dialog = new ProgressDialog(this);
         dialog.setIndeterminate(true);
         dialog.setMessage("please wait...");

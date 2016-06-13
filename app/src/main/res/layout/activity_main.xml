@@ -16,6 +16,14 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin">
 
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/env_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:spinnerMode="dialog" />
+
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/name"
             android:layout_width="match_parent"
