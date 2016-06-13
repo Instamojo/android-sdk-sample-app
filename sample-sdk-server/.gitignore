@@ -27,4 +27,6 @@ _testmain.go
 
 .idea
 *.iml
+keys.json
+sample-sdk-server
 

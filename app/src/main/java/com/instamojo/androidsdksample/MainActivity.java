@@ -207,6 +207,8 @@ public class MainActivity extends AppCompatActivity {
                             } else {
                                 showToast(error.getMessage());
                             }
+
+                            showToast(error.getMessage());
                             return;
                         }
 
