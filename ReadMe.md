@@ -43,7 +43,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.instamojo:android-sdk:+'
+    compile 'com.instamojo:android-sdk:1.0.2'
 }
 
 ```
