@@ -33,8 +33,8 @@ func main() {
 	flag.Parse()
 
 	router := mux.NewRouter()
-	router.HandleFunc("/create", createOrderTokens)
-	router.HandleFunc("/status", statusHandler)
+	router.HandleFunc("/create", createOrderTokens).Methods("GET")
+	router.HandleFunc("/status", statusHandler).Methods("GET")
 	router.HandleFunc("/refund", refundHandler).Methods("POST")
 
 	log.Fatal(http.ListenAndServe(":8080", LoggingHandler(router)))
