@@ -2,8 +2,6 @@ package main
 
 import (
 	"bytes"
-	"crypto/tls"
-	"crypto/x509"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -25,7 +23,6 @@ var (
 	clientSecret     *string
 	clientIDTest     *string
 	clientTestSecret *string
-	client           *http.Client
 )
 
 func main() {
@@ -35,10 +32,6 @@ func main() {
 	clientIDTest = flag.String("client_id_test", "", "test client id")
 	clientTestSecret = flag.String("client_secret_test", "", "test client secret")
 	flag.Parse()
-
-	pool := x509.NewCertPool()
-	pool.AppendCertsFromPEM(pemCerts)
-	client = &http.Client{Transport: &http.Transport{TLSClientConfig: &tls.Config{RootCAs: pool}}}
 
 	router := mux.NewRouter()
 	router.HandleFunc("/create", createOrderTokens).Methods("GET")
@@ -76,6 +69,7 @@ func createOrderTokens(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	authRequest.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	client := &http.Client{}
 	resp, err := client.Do(authRequest)
 	if err != nil {
 		log.Println(err)
@@ -148,6 +142,7 @@ func statusHandler(w http.ResponseWriter, r *http.Request) {
 	statusRequest.Header.Set("Authorization", r.Header.Get("Authorization"))
 	statusRequest.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
+	client := &http.Client{}
 	resp, err := client.Do(statusRequest)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -201,6 +196,7 @@ func refundHandler(w http.ResponseWriter, r *http.Request) {
 	refundRequest.Header.Set("Authorization", r.Header.Get("Authorization"))
 	refundRequest.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
+	client := &http.Client{}
 	resp, err := client.Do(refundRequest)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
