@@ -2,6 +2,8 @@ package main
 
 import (
 	"bytes"
+	"crypto/tls"
+	"crypto/x509"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -23,14 +25,20 @@ var (
 	clientSecret     *string
 	clientIDTest     *string
 	clientTestSecret *string
+	client           *http.Client
 )
 
 func main() {
+	log.SetFlags(log.Lshortfile)
 	clientID = flag.String("client_id", "", "prod client id")
 	clientSecret = flag.String("client_secret", "", "prod client secret")
 	clientIDTest = flag.String("client_id_test", "", "test client id")
 	clientTestSecret = flag.String("client_secret_test", "", "test client secret")
 	flag.Parse()
+
+	pool := x509.NewCertPool()
+	pool.AppendCertsFromPEM(pemCerts)
+	client = &http.Client{Transport: &http.Transport{TLSClientConfig: &tls.Config{RootCAs: pool}}}
 
 	router := mux.NewRouter()
 	router.HandleFunc("/create", createOrderTokens).Methods("GET")
@@ -63,13 +71,14 @@ func createOrderTokens(w http.ResponseWriter, r *http.Request) {
 	values.Set("grant_type", "client_credentials")
 	authRequest, err := http.NewRequest("POST", authUrl, bytes.NewBufferString(values.Encode()))
 	if err != nil {
+		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	authRequest.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	client := &http.Client{}
 	resp, err := client.Do(authRequest)
 	if err != nil {
+		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -77,6 +86,7 @@ func createOrderTokens(w http.ResponseWriter, r *http.Request) {
 
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
+		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -88,6 +98,7 @@ func createOrderTokens(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err = json.Unmarshal(data, &jsonResponse); err != nil {
+		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -137,7 +148,6 @@ func statusHandler(w http.ResponseWriter, r *http.Request) {
 	statusRequest.Header.Set("Authorization", r.Header.Get("Authorization"))
 	statusRequest.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
-	client := http.Client{}
 	resp, err := client.Do(statusRequest)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -190,7 +200,7 @@ func refundHandler(w http.ResponseWriter, r *http.Request) {
 
 	refundRequest.Header.Set("Authorization", r.Header.Get("Authorization"))
 	refundRequest.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	client := http.Client{}
+
 	resp, err := client.Do(refundRequest)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
