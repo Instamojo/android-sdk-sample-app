@@ -22,7 +22,7 @@ var (
 	clientID         *string
 	clientSecret     *string
 	clientIDTest     *string
-	clientTestSecret *string
+	clientSecretTest *string
 )
 
 func main() {
@@ -30,8 +30,24 @@ func main() {
 	clientID = flag.String("client_id", "", "prod client id")
 	clientSecret = flag.String("client_secret", "", "prod client secret")
 	clientIDTest = flag.String("client_id_test", "", "test client id")
-	clientTestSecret = flag.String("client_secret_test", "", "test client secret")
+	clientSecretTest = flag.String("client_secret_test", "", "test client secret")
 	flag.Parse()
+
+	if *clientID == "" {
+		log.Fatal("Client ID is Empty")
+	}
+
+	if *clientSecret == "" {
+		log.Fatal("Client secret is Empty")
+	}
+
+	if *clientIDTest == "" {
+		log.Fatal("Client ID Test is empty")
+	}
+
+	if *clientSecretTest == "" {
+		log.Fatal("Client Secret Test is Empty")
+	}
 
 	router := mux.NewRouter()
 	router.HandleFunc("/create", createOrderTokens).Methods("GET")
@@ -54,7 +70,7 @@ func createOrderTokens(w http.ResponseWriter, r *http.Request) {
 	if env == "test" {
 		authUrl = TEST_URL
 		id = *clientIDTest
-		secret = *clientTestSecret
+		secret = *clientSecretTest
 	}
 
 	authUrl += "/oauth2/token/"
