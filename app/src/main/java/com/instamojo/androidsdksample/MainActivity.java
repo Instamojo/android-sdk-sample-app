@@ -20,19 +20,19 @@ import com.instamojo.android.helpers.Constants;
 import com.instamojo.android.models.Errors;
 import com.instamojo.android.models.Order;
 import com.instamojo.android.network.Request;
-import com.instamojo.android.network.Urls;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -42,15 +42,14 @@ public class MainActivity extends AppCompatActivity {
     private static final HashMap<String, String> env_options = new HashMap<>();
 
     static {
-        env_options.put("Test Environment", "https://test.instamojo.com/");
-        env_options.put("Production Environment", "https://api.instamojo.com/");
+        env_options.put("Test", "https://test.instamojo.com/");
+        env_options.put("Production", "https://api.instamojo.com/");
     }
 
-    // accessToken is Private Auth Token provided at https://www.instamojo.com/integrations/
-    private String accessToken = "wLd5A00ZwskdBhIlGNuFSx5LyhrjpC";
-    private Random random = new Random(System.currentTimeMillis());
     private ProgressDialog dialog;
     private AppCompatEditText nameBox, emailBox, phoneBox, amountBox, descriptionBox;
+    private String currentEnv = null;
+    private String accessToken = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +74,8 @@ public class MainActivity extends AppCompatActivity {
         envSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Instamojo.setBaseUrl(env_options.get(envs.get(position)));
+                currentEnv = envs.get(position);
+                Instamojo.setBaseUrl(env_options.get(currentEnv));
             }
 
             @Override
@@ -91,15 +91,7 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClickPay();
-            }
-        });
-
-        Button updateToken = (Button) findViewById(R.id.update_token);
-        updateToken.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateToken();
+                fetchTokenAndTransactionID();
             }
         });
 
@@ -107,15 +99,12 @@ public class MainActivity extends AppCompatActivity {
         Instamojo.setLogLevel(Log.DEBUG);
     }
 
-    private void onClickPay() {
+    private void createOrder(String accessToken, String transactionID) {
         String name = nameBox.getText().toString();
         final String email = emailBox.getText().toString();
         String phone = phoneBox.getText().toString();
         String amount = amountBox.getText().toString();
         String description = descriptionBox.getText().toString();
-
-        //this is only for testing. Actual transaciton_id must be fetched from the server
-        String transactionID = String.valueOf(random.nextInt());
 
         //Create the Order
         Order order = new Order(accessToken, transactionID, name, email, phone, amount, description);
@@ -207,8 +196,6 @@ public class MainActivity extends AppCompatActivity {
                             } else {
                                 showToast(error.getMessage());
                             }
-
-                            showToast(error.getMessage());
                             return;
                         }
 
@@ -244,53 +231,246 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
     /**
-     * Token should not be generated on the app like this. The token must be generated on your server
-     * and should be fetched to your app.
+     *
+     * Fetch Access token and unique transactionID from developers server
      */
-    private void updateToken() {
+    private void fetchTokenAndTransactionID() {
         if (!dialog.isShowing()) {
             dialog.show();
         }
+
         OkHttpClient client = new OkHttpClient();
-
-        // Both client_id and client_secret should be associated with your Instamojo's user account
-        //The client ID and client secret used here should not be used on your application
-        RequestBody body = new FormBody.Builder()
-                .add("grant_type", "client_credentials")
-                .add("client_id", "cNrgex0RQ3P176F0jCjFfEyCy2UnXjunM1AZCIT8")
-                .add("client_secret", "SEqtkfR4GriSPtZkwgBWKEEYCpA8nxa7Q8bDRHqJSWEX1nPyTdNL8hglzYYNvI6kCVGlLr7abPWZ0L9S77VwpBDUTGdaSM9EdZdatQQjmmeykTlyyMqiNuSQs6N6WBsW")
+        HttpUrl url = getHttpURLBuilder()
+                .addPathSegment("create")
+                .addQueryParameter("env", currentEnv.toLowerCase())
                 .build();
-
         okhttp3.Request request = new okhttp3.Request.Builder()
-                .url(Urls.getBaseUrl() + "oauth2/token/")
-                .post(body)
+                .url(url)
                 .build();
+
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                if (dialog != null && dialog.isShowing()) {
-                    dialog.dismiss();
-                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (dialog != null && dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
+
+                        showToast("Failed to fetch the Order Tokens");
+                    }
+                });
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                String responseBody = response.body().string();
+                String responseString;
+                String errorMessage = null;
+                String transactionID = null;
+                responseString = response.body().string();
                 response.body().close();
                 try {
-                    JSONObject responseObject = new JSONObject(responseBody);
-                    accessToken = responseObject.getString("access_token");
-                    showToast("Updated token");
+                    JSONObject responseObject = new JSONObject(responseString);
+                    if (responseObject.has("error")) {
+                        errorMessage = responseObject.getString("error");
+                    } else {
+                        accessToken = responseObject.getString("access_token");
+                        transactionID = responseObject.getString("transaction_id");
+                    }
                 } catch (JSONException e) {
-                    showToast("Failed to update token");
+                    errorMessage = "Failed to fetch Order tokens";
                 }
-                if (dialog != null && dialog.isShowing()) {
-                    dialog.dismiss();
-                }
+
+                final String finalErrorMessage = errorMessage;
+                final String finalTransactionID = transactionID;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (dialog != null && dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
+
+                        if (finalErrorMessage != null) {
+                            showToast(finalErrorMessage);
+                            return;
+                        }
+
+                        createOrder(accessToken, finalTransactionID);
+                    }
+                });
+
             }
         });
+
+    }
+
+    /**
+     * Will check for the transaction status of a particular Transaction
+     *
+     * @param transactionID Unique identifier of a transaction ID
+     */
+    private void checkPaymentStatus(String transactionID) {
+        if (accessToken == null || transactionID == null) {
+            return;
+        }
+
+        if (dialog != null && !dialog.isShowing()) {
+            dialog.show();
+        }
+
+        showToast("checking transaction status");
+        OkHttpClient client = new OkHttpClient();
+        HttpUrl url = getHttpURLBuilder()
+                .addPathSegment("status")
+                .addQueryParameter("transaction_id", transactionID)
+                .addQueryParameter("env", currentEnv.toLowerCase())
+                .build();
+
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .addHeader("Authorization", "Bearer " + accessToken)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (dialog != null && dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
+                        showToast("Failed to fetch the Transaction status");
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseString = response.body().string();
+                response.body().close();
+                String status = null;
+                String paymentID = null;
+                String amount = null;
+                String errorMessage = null;
+
+                try {
+                    JSONObject responseObject = new JSONObject(responseString);
+                    JSONArray payments = responseObject.getJSONArray("payments");
+                    for (int i = 0; i < payments.length(); i++) {
+                        status = payments.getJSONObject(i).getString("status");
+                        paymentID = payments.getJSONObject(i).getString("id");
+                    }
+                    amount = responseObject.getString("amount");
+
+                } catch (JSONException e) {
+                    errorMessage = "Failed to fetch the Transaction status";
+                }
+
+                final String finalStatus = status;
+                final String finalErrorMessage = errorMessage;
+                final String finalPaymentID = paymentID;
+                final String finalAmount = amount;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (dialog != null && dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
+                        if (finalStatus == null) {
+                            showToast(finalErrorMessage);
+                            return;
+                        }
+
+                        if (!finalStatus.equalsIgnoreCase("successful")) {
+                            showToast("Transaction still pending");
+                            return;
+                        }
+
+                        showToast("Transaction Successful for id - " + finalPaymentID);
+                        refundTheAmount(finalPaymentID, finalAmount);
+                    }
+                });
+            }
+        });
+
+    }
+
+    /**
+     * Will initiate a refund for a given transaction with given amount
+     *
+     * @param paymentID Unique identifier for the transaction
+     * @param amount    amount to be refunded
+     */
+    private void refundTheAmount(String paymentID, String amount) {
+        if (accessToken == null || paymentID == null || amount == null) {
+            return;
+        }
+
+        if (dialog != null && !dialog.isShowing()) {
+            dialog.show();
+        }
+
+        showToast("Initiating a refund for - " + amount);
+        OkHttpClient client = new OkHttpClient();
+        HttpUrl url = getHttpURLBuilder()
+                .addPathSegment("refund")
+                .build();
+
+        RequestBody body = new FormBody.Builder()
+                .add("env", currentEnv.toLowerCase())
+                .add("payment_id", paymentID)
+                .add("amount", amount)
+                .build();
+
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .addHeader("Authorization", "Bearer " + accessToken)
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (dialog != null && dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
+                        showToast("Failed to Initiate a refund");
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, final Response response) throws IOException {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (dialog != null && dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
+                        String message;
+
+                        if (response.isSuccessful()) {
+                            message = "Refund intiated successfully";
+                        } else {
+                            message = "Failed to Initiate a refund";
+                        }
+
+                        showToast(message);
+                    }
+                });
+            }
+        });
+    }
+
+    private HttpUrl.Builder getHttpURLBuilder() {
+        return new HttpUrl.Builder()
+                .scheme("https")
+                .host("sample-sdk-server.instamojo.com");
     }
 
     @Override
@@ -303,7 +483,7 @@ public class MainActivity extends AppCompatActivity {
 
             // Check transactionID, orderID, and orderID for null before using them to check the Payment status.
             if (orderID != null && transactionID != null && paymentID != null) {
-                showToast("Check for Payment with Order ID - " + orderID);
+                checkPaymentStatus(transactionID);
             } else {
                 showToast("Oops!! Payment was cancelled");
             }
