@@ -1,1 +1,2 @@
-include ':app'
+include ':app' //, ':android-sdk'
+//project (':android-sdk').projectDir = new File ('../android-sdk/android-sdk')
