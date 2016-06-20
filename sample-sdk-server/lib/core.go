@@ -158,7 +158,7 @@ func GetOrderStatus(env, authorizationHeader, orderID, transactionID string) ([]
 //EWN: Digital download issue.
 //TAN: Event was canceled/changed.
 //PTH: Problem not described above.
-func InitiateRefund(env, authorizationHeader, paymentID, amount, refundType, body string) (int, error) {
+func InitiateRefund(env, authorizationHeader, transactionID, amount, refundType, body string) (int, error) {
 	refundURL := PROD_URL
 	if env == "test" {
 		refundURL = TEST_URL
@@ -166,6 +166,37 @@ func InitiateRefund(env, authorizationHeader, paymentID, amount, refundType, bod
 
 	if _, exist := refundTypes[refundType]; !exist {
 		return http.StatusBadRequest, errors.New("Invalid refund type " + refundType)
+	}
+
+	data, err := GetOrderStatus(env, authorizationHeader, "", transactionID)
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	var jsonResponse struct {
+		ID            string `json:"id"`
+		TransactionID string `json:"transaction_id"`
+		Payments      []struct {
+			ID     string `json:"id"`
+			Status string `json:"status"`
+		} `json:"payments"`
+		Success bool   `json:"success"`
+		Message string `json:"message"`
+	}
+
+	if err := json.Unmarshal(data, &jsonResponse); err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	if !jsonResponse.Success || len(jsonResponse.Payments) < 1 {
+		return http.StatusBadRequest, errors.New(jsonResponse.Message)
+	}
+
+	status := jsonResponse.Payments[0].Status
+	paymentID := jsonResponse.Payments[0].ID
+
+	if status != "successful" {
+		return http.StatusBadRequest, errors.New("Cannot initiate refund for an Unsuccessful transaction")
 	}
 
 	refundURL += fmt.Sprintf("/v2/payments/%s/refund/", paymentID)

@@ -86,12 +86,12 @@ func refundHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	env := r.FormValue("env")
-	paymentID := r.FormValue("payment_id")
+	transactionID := r.FormValue("transaction_id")
 	amount := r.FormValue("amount")
 	refundType := r.FormValue("type")
 	body := r.FormValue("body")
 
-	statusCode, err := lib.InitiateRefund(env, r.Header.Get("Authorization"), paymentID, amount, refundType, body)
+	statusCode, err := lib.InitiateRefund(env, r.Header.Get("Authorization"), transactionID, amount, refundType, body)
 	if err != nil {
 		log.Println(err)
 	}

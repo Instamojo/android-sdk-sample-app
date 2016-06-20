@@ -357,11 +357,9 @@ public class MainActivity extends AppCompatActivity {
 
                 try {
                     JSONObject responseObject = new JSONObject(responseString);
-                    JSONArray payments = responseObject.getJSONArray("payments");
-                    for (int i = 0; i < payments.length(); i++) {
-                        status = payments.getJSONObject(i).getString("status");
-                        paymentID = payments.getJSONObject(i).getString("id");
-                    }
+                    JSONObject payment = responseObject.getJSONArray("payments").getJSONObject(0);
+                    status = payment.getString("status");
+                    paymentID = payment.getString("id");
                     amount = responseObject.getString("amount");
 
                 } catch (JSONException e) {
