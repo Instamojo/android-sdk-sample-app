@@ -19,34 +19,34 @@ const PROD_URL = "https://api.instamojo.com"
 const TEST_URL = "https://test.instamojo.com"
 
 var (
-	clientID         *string
-	clientSecret     *string
-	clientIDTest     *string
-	clientSecretTest *string
+	prodClientID     *string
+	prodClientSecret *string
+	testClientID     *string
+	testClientSecret *string
 )
 
 func main() {
 	log.SetFlags(log.Lshortfile)
-	clientID = flag.String("client_id", "", "prod client id")
-	clientSecret = flag.String("client_secret", "", "prod client secret")
-	clientIDTest = flag.String("client_id_test", "", "test client id")
-	clientSecretTest = flag.String("client_secret_test", "", "test client secret")
+	prodClientID = flag.String("production-client-id", "", "Production Client ID")
+	prodClientSecret = flag.String("production-client-secret", "", "Production Client Secret")
+	testClientID = flag.String("test-client-id", "", "Test Client ID")
+	testClientSecret = flag.String("test-client-secret", "", "Test Client Secret")
 	flag.Parse()
 
-	if *clientID == "" {
-		log.Fatal("Client ID is Empty")
+	if *prodClientID == "" {
+		log.Fatal("Production Client ID is missing")
 	}
 
-	if *clientSecret == "" {
-		log.Fatal("Client secret is Empty")
+	if *prodClientSecret == "" {
+		log.Fatal("Production Client secret is missing")
 	}
 
-	if *clientIDTest == "" {
-		log.Fatal("Client ID Test is empty")
+	if *testClientID == "" {
+		log.Fatal("Test Client ID is missing")
 	}
 
-	if *clientSecretTest == "" {
-		log.Fatal("Client Secret Test is Empty")
+	if *testClientSecret == "" {
+		log.Fatal("Test Client Secret is missing")
 	}
 
 	router := mux.NewRouter()
@@ -65,12 +65,12 @@ func createOrderTokens(w http.ResponseWriter, r *http.Request) {
 
 	env := r.FormValue("env")
 	authUrl := PROD_URL
-	id := *clientID
-	secret := *clientSecret
+	id := *prodClientID
+	secret := *prodClientSecret
 	if env == "test" {
 		authUrl = TEST_URL
-		id = *clientIDTest
-		secret = *clientSecretTest
+		id = *testClientID
+		secret = *testClientSecret
 	}
 
 	authUrl += "/oauth2/token/"
