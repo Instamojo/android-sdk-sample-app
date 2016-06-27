@@ -30,39 +30,7 @@ If you do not have the credentials yet, raise a support ticket so that we could 
 send you the credentials in a jiffy.
 
 ## How to Generate Access Token?
-Generating the access_token is a http post request from your server.
-You need to generate this on your application server and send it to client
-
-The post parameters are as follows:<br>
-`"client_id":"YOUR CLIENT ID"`<br>
-`"client_secret":"YOUR CLIENT SECRET"`<br>
-`"grant_type": "client_credentials"`<br>
-
-URL for production - "https://api.instamojo.com/oauth2/token/"
-URL for test - "https://test.instamojo.com/oauth2/token/"
-
-### Successful Response
-```JSON
-{
-  "access_token": "y70kak2K0Rg7J4PAL8sdW0MutnGJEl",
-  "token_type": "Bearer",
-  "expires_in": 36000,
-  "scope": "read write"
-}
-```
-
-### Failed Responses
-```JSON
-{
-  "error": "unsupported_grant_type"
-}
-```
-
-```JSON
-{
-  "error": "invalid_client"
-}
-```
+Please check the Sample Server [documentation](sample-sdk-server/Readme.md#generating-access-token) on how to generate access_token using `client_id` and `client_secret`
 
 ## What is this `Transaction ID` I keep hearing about?
 Well, transaction ID is a unique ID for an Order. Using this transaction ID, 
@@ -77,4 +45,4 @@ to create an `Order`.
 You can check the documentation for the Sample Server [here](sample-sdk-server/Readme.md)
 
 ## I have few more queries
-Well, if this documentation doesn't answer any specific questions regarding the Sample App, please raise support ticket. We will reply back very soon.
+Well, if this documentation doesn't answer any specific questions regarding the Sample App, please raise support ticket. We will respond ASAP.
