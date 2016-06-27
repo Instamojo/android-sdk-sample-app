@@ -1,4 +1,4 @@
-# Android SDK Sample Integration
+# Android SDK Sample Documentation
 
 ## Why Sample App?
 1. The Sample app implements the complete scope of the Android SDK. 
