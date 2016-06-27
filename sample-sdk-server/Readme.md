@@ -2,7 +2,7 @@
 
 ## Why Sample Server project?
 1. To serve as a backend for the Sample App. 
-You can find the documentation for the Sample App [here](../Readme.md)
+You can find the documentation for the Sample App [here](../ReadMe.md)
 2. To help you get started with the backend for your Application.
 
 ## Scope of the project
