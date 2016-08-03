@@ -39,7 +39,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.instamojo:android-sdk:1.0.4'
+    compile 'com.instamojo:android-sdk:+'
 
     //For Internal development
     //compile project (':android-sdk')
