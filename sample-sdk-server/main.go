@@ -39,6 +39,7 @@ func main() {
 	router.HandleFunc("/create/", createOrderTokens).Methods("POST")
 	router.HandleFunc("/status", statusHandler).Methods("GET")
 	router.HandleFunc("/refund/", refundHandler).Methods("POST")
+	router.HandleFunc("/ping", pingHandler).Methods("GET")
 
 	log.Fatal(http.ListenAndServe(":8080", LoggingHandler(router)))
 }
@@ -96,4 +97,8 @@ func refundHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 	w.WriteHeader(statusCode)
+}
+
+func pingHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
 }
