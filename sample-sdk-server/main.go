@@ -37,6 +37,7 @@ func main() {
 
 	router := mux.NewRouter()
 	router.HandleFunc("/create/", createOrderTokens).Methods("POST")
+	router.HandleFunc("/create", createOrderTokens).Methods("POST")
 	router.HandleFunc("/status", statusHandler).Methods("GET")
 	router.HandleFunc("/refund/", refundHandler).Methods("POST")
 	router.HandleFunc("/ping", pingHandler).Methods("GET")
