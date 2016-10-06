@@ -243,10 +243,15 @@ public class MainActivity extends AppCompatActivity {
         OkHttpClient client = new OkHttpClient();
         HttpUrl url = getHttpURLBuilder()
                 .addPathSegment("create")
-                .addQueryParameter("env", currentEnv.toLowerCase())
                 .build();
+
+        RequestBody body = new FormBody.Builder()
+                .add("env", currentEnv.toLowerCase())
+                .build();
+
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
+                .post(body)
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
