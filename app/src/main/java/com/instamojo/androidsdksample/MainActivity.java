@@ -21,7 +21,6 @@ import com.instamojo.android.models.Errors;
 import com.instamojo.android.models.Order;
 import com.instamojo.android.network.Request;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -109,6 +108,9 @@ public class MainActivity extends AppCompatActivity {
         //Create the Order
         Order order = new Order(accessToken, transactionID, name, email, phone, amount, description);
 
+        //set webhook
+        order.setWebhook("http://your.server.com/webhook/");
+
         //Validate the Order
         if (!order.isValid()) {
             //oops order validation failed. Pinpoint the issue(s).
@@ -141,6 +143,10 @@ public class MainActivity extends AppCompatActivity {
                 showToast("Redirection URL is invalid");
             }
 
+            if (!order.isValidWebhook()) {
+                showToast("Webhook URL is invalid");
+            }
+
             return;
         }
 
@@ -171,6 +177,11 @@ public class MainActivity extends AppCompatActivity {
 
                                 if (!validationError.isValidRedirectURL()) {
                                     showToast("Redirect url is invalid");
+                                    return;
+                                }
+
+                                if (!validationError.isValidWebhook()) {
+                                    showToast("Webhook url is invalid");
                                     return;
                                 }
 
@@ -419,6 +430,7 @@ public class MainActivity extends AppCompatActivity {
         OkHttpClient client = new OkHttpClient();
         HttpUrl url = getHttpURLBuilder()
                 .addPathSegment("refund")
+                .addPathSegment("")
                 .build();
 
         RequestBody body = new FormBody.Builder()
