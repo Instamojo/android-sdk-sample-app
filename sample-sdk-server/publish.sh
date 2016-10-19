@@ -10,7 +10,7 @@ CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
 DOCKER_TAG=${CURRENT_BRANCH//\//_}"-"$LATEST_COMMIT
 
 # Tag it with DOCKER_TAG
-docker tag -f sample-sdk-server:latest $DOCKER_REGISTRY/sample-sdk-server:$DOCKER_TAG
+docker tag sample-sdk-server:latest $DOCKER_REGISTRY/sample-sdk-server:$DOCKER_TAG
 
 # docker login to our ecr for us-east-1 region
 `aws ecr get-login --region us-east-1`
