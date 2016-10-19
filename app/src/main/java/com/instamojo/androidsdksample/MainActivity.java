@@ -327,7 +327,7 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param transactionID Unique identifier of a transaction ID
      */
-    private void checkPaymentStatus(String transactionID) {
+    private void checkPaymentStatus(final String transactionID) {
         if (accessToken == null || transactionID == null) {
             return;
         }
@@ -403,7 +403,7 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         showToast("Transaction Successful for id - " + finalPaymentID);
-                        refundTheAmount(finalPaymentID, finalAmount);
+                        refundTheAmount(transactionID, finalAmount);
                     }
                 });
             }
@@ -414,11 +414,11 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Will initiate a refund for a given transaction with given amount
      *
-     * @param paymentID Unique identifier for the transaction
+     * @param transactionID Unique identifier for the transaction
      * @param amount    amount to be refunded
      */
-    private void refundTheAmount(String paymentID, String amount) {
-        if (accessToken == null || paymentID == null || amount == null) {
+    private void refundTheAmount(String transactionID, String amount) {
+        if (accessToken == null || transactionID == null || amount == null) {
             return;
         }
 
@@ -435,8 +435,10 @@ public class MainActivity extends AppCompatActivity {
 
         RequestBody body = new FormBody.Builder()
                 .add("env", currentEnv.toLowerCase())
-                .add("payment_id", paymentID)
+                .add("transaction_id", transactionID)
                 .add("amount", amount)
+                .add("type", "PTH")
+                .add("body", "Refund the Amount")
                 .build();
 
         okhttp3.Request request = new okhttp3.Request.Builder()

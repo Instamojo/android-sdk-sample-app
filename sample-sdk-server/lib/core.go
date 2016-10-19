@@ -188,7 +188,7 @@ func InitiateRefund(env, authorizationHeader, transactionID, amount, refundType,
 		return http.StatusInternalServerError, err
 	}
 
-	if !jsonResponse.Success || len(jsonResponse.Payments) < 1 {
+	if jsonResponse.Success || len(jsonResponse.Payments) < 1 {
 		return http.StatusBadRequest, errors.New(jsonResponse.Message)
 	}
 
