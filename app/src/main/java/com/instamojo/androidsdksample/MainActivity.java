@@ -98,6 +98,40 @@ public class MainActivity extends AppCompatActivity {
         Instamojo.setLogLevel(Log.DEBUG);
     }
 
+    // this is for the market place
+    // you should have created the order from your backend and pass back the order id to app for the payment
+    private void fetchOrder(String accessToken, String orderID){
+        // Good time to show dialog
+        Request request = new Request(accessToken, orderID, new OrderRequestCallBack() {
+            @Override
+            public void onFinish(final Order order, final Exception error) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        dialog.dismiss();
+                        if (error != null) {
+                            if (error instanceof Errors.ConnectionError) {
+                                showToast("No internet connection");
+                            } else if (error instanceof Errors.ServerError) {
+                                showToast("Server Error. Try again");
+                            } else if (error instanceof Errors.AuthenticationError) {
+                                showToast("Access token is invalid or expired. Please Update the token!!");
+                            } else {
+                                showToast(error.toString());
+                            }
+                            return;
+                        }
+
+                        startPreCreatedUI(order);
+                    }
+                });
+
+            }
+        });
+
+        request.execute();
+    }
+
     private void createOrder(String accessToken, String transactionID) {
         String name = nameBox.getText().toString();
         final String email = emailBox.getText().toString();
@@ -327,8 +361,8 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param transactionID Unique identifier of a transaction ID
      */
-    private void checkPaymentStatus(final String transactionID) {
-        if (accessToken == null || transactionID == null) {
+    private void checkPaymentStatus(final String transactionID, final String orderID) {
+        if (accessToken == null || (transactionID == null && orderID == null)) {
             return;
         }
 
@@ -338,11 +372,15 @@ public class MainActivity extends AppCompatActivity {
 
         showToast("checking transaction status");
         OkHttpClient client = new OkHttpClient();
-        HttpUrl url = getHttpURLBuilder()
-                .addPathSegment("status")
-                .addQueryParameter("transaction_id", transactionID)
-                .addQueryParameter("env", currentEnv.toLowerCase())
-                .build();
+        HttpUrl.Builder builder = getHttpURLBuilder();
+        builder.addPathSegment("status");
+        if (transactionID != null){
+            builder.addQueryParameter("transaction_id", transactionID);
+        } else {
+            builder.addQueryParameter("id", orderID);
+        }
+        builder.addQueryParameter("env", currentEnv.toLowerCase());
+        HttpUrl url = builder.build();
 
         okhttp3.Request request = new okhttp3.Request.Builder()
                 .url(url)
@@ -499,8 +537,8 @@ public class MainActivity extends AppCompatActivity {
             String paymentID = data.getStringExtra(Constants.PAYMENT_ID);
 
             // Check transactionID, orderID, and orderID for null before using them to check the Payment status.
-            if (orderID != null && transactionID != null && paymentID != null) {
-                checkPaymentStatus(transactionID);
+            if (transactionID != null || paymentID != null) {
+                checkPaymentStatus(transactionID, orderID);
             } else {
                 showToast("Oops!! Payment was cancelled");
             }
