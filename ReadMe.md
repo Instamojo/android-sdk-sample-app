@@ -42,7 +42,7 @@ The transaction ID should be unique for every Order.
 Yes, we do have a sample server written in Google Go. Sample uses the Sample server to get `access_token` and `transaction_id`
 to create an `Order`.
 
-You can check the documentation for the Sample Server [here](sample-sdk-server/Readme.md)
+You can check the documentation for the Sample Server [here](https://github.com/Instamojo/sample-sdk-server/blob/master/Readme.md)
 
 ## I have few more queries
 Well, if this documentation doesn't answer any specific questions regarding the Sample App, please raise support ticket. We will respond ASAP.
