@@ -30,7 +30,7 @@ If you do not have the credentials yet, raise a support ticket so that we could 
 send you the credentials in a jiffy.
 
 ## How to Generate Access Token?
-Please check the Sample Server [documentation](sample-sdk-server/Readme.md#generating-access-token) on how to generate access_token using `client_id` and `client_secret`
+Please check the Sample Server [documentation](https://github.com/Instamojo/sample-sdk-server/blob/master/Readme.md#generating-access-token) on how to generate access_token using `client_id` and `client_secret`
 
 ## What is this `Transaction ID` I keep hearing about?
 Well, transaction ID is a unique ID for an Order. Using this transaction ID, 
