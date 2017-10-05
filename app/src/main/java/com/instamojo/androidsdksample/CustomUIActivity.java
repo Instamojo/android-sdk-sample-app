@@ -144,7 +144,7 @@ public class CustomUIActivity extends AppCompatActivity {
                             if (error instanceof Errors.ConnectionError) {
                                 Log.e("App", "No internet");
                             } else if (error instanceof Errors.ServerError) {
-                                Log.e("App", "Server Error. trya again");
+                                Log.e("App", "Server Error. try again");
                             } else {
                                 Log.e("App", error.getMessage());
                             }
@@ -162,7 +162,7 @@ public class CustomUIActivity extends AppCompatActivity {
         if (!card.isCardValid()) {
 
             if (!card.isCardNameValid()) {
-                showErrorToast("Card Holders Name is invalid");
+                showErrorToast("Card Holder's Name is invalid");
             }
 
             if (!card.isCardNumberValid()) {
