@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
         dialog = new ProgressDialog(this);
         dialog.setIndeterminate(true);
-        dialog.setMessage("please wait...");
+        dialog.setMessage("Please wait...");
         dialog.setCancelable(false);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,9 +113,9 @@ public class MainActivity extends AppCompatActivity {
                             if (error instanceof Errors.ConnectionError) {
                                 showToast("No internet connection");
                             } else if (error instanceof Errors.ServerError) {
-                                showToast("Server Error. Try again");
+                                showToast("Server error. Try again");
                             } else if (error instanceof Errors.AuthenticationError) {
-                                showToast("Access token is invalid or expired. Please Update the token!!");
+                                showToast("Access token is invalid or expired. Please update the token");
                             } else {
                                 showToast(error.toString());
                             }
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
         Order order = new Order(accessToken, transactionID, name, email, phone, amount, description);
 
         //set webhook
-        order.setWebhook("http://your.server.com/webhook/");
+        // order.setWebhook("http://your.server.com/webhook/");
 
         //Validate the Order
         if (!order.isValid()) {
@@ -197,9 +197,9 @@ public class MainActivity extends AppCompatActivity {
                             if (error instanceof Errors.ConnectionError) {
                                 showToast("No internet connection");
                             } else if (error instanceof Errors.ServerError) {
-                                showToast("Server Error. Try again");
+                                showToast("Server error. Try again");
                             } else if (error instanceof Errors.AuthenticationError) {
-                                showToast("Access token is invalid or expired. Please Update the token!!");
+                                showToast("Access token is invalid or expired. Please Update the token.");
                             } else if (error instanceof Errors.ValidationError) {
                                 // Cast object to validation to pinpoint the issue
                                 Errors.ValidationError validationError = (Errors.ValidationError) error;
@@ -330,7 +330,7 @@ public class MainActivity extends AppCompatActivity {
                         transactionID = responseObject.getString("transaction_id");
                     }
                 } catch (JSONException e) {
-                    errorMessage = "Failed to fetch Order tokens";
+                    errorMessage = "Failed to fetch order tokens";
                 }
 
                 final String finalErrorMessage = errorMessage;
@@ -370,7 +370,7 @@ public class MainActivity extends AppCompatActivity {
             dialog.show();
         }
 
-        showToast("checking transaction status");
+        showToast("Checking transaction status");
         OkHttpClient client = new OkHttpClient();
         HttpUrl.Builder builder = getHttpURLBuilder();
         builder.addPathSegment("status");
@@ -395,7 +395,7 @@ public class MainActivity extends AppCompatActivity {
                         if (dialog != null && dialog.isShowing()) {
                             dialog.dismiss();
                         }
-                        showToast("Failed to fetch the Transaction status");
+                        showToast("Failed to fetch the transaction status");
                     }
                 });
             }
@@ -417,7 +417,7 @@ public class MainActivity extends AppCompatActivity {
                     amount = responseObject.getString("amount");
 
                 } catch (JSONException e) {
-                    errorMessage = "Failed to fetch the Transaction status";
+                    errorMessage = "Failed to fetch the transaction status";
                 }
 
                 final String finalStatus = status;
@@ -440,7 +440,7 @@ public class MainActivity extends AppCompatActivity {
                             return;
                         }
 
-                        showToast("Transaction Successful for id - " + finalPaymentID);
+                        showToast("Transaction successful for id - " + finalPaymentID);
                         refundTheAmount(transactionID, finalAmount);
                     }
                 });
@@ -510,9 +510,9 @@ public class MainActivity extends AppCompatActivity {
                         String message;
 
                         if (response.isSuccessful()) {
-                            message = "Refund intiated successfully";
+                            message = "Refund initiated successfully";
                         } else {
-                            message = "Failed to Initiate a refund";
+                            message = "Failed to initiate a refund";
                         }
 
                         showToast(message);
