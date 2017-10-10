@@ -2,6 +2,7 @@ package com.instamojo.androidsdksample;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
@@ -32,11 +33,33 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static class DefaultHeadersInterceptor implements Interceptor {
+        @Override
+        public Response intercept(Chain chain) throws IOException {
+            return chain.proceed(chain.request()
+                    .newBuilder()
+                    .header("User-Agent", getUserAgent())
+                    .header("Referer", getReferer())
+                    .build());
+        }
+
+        private static String getUserAgent() {
+            return "instamojo-android-sdk-sample/" + BuildConfig.VERSION_NAME
+                    + " android/" + Build.VERSION.RELEASE
+                    + " " + Build.BRAND + "/" + Build.MODEL;
+        }
+
+        private static String getReferer() {
+            return "android-app://" + BuildConfig.APPLICATION_ID;
+        }
+    }
 
     private static final HashMap<String, String> env_options = new HashMap<>();
 
@@ -49,6 +72,10 @@ public class MainActivity extends AppCompatActivity {
     private AppCompatEditText nameBox, emailBox, phoneBox, amountBox, descriptionBox;
     private String currentEnv = null;
     private String accessToken = null;
+
+    private static OkHttpClient client = new OkHttpClient.Builder()
+            .addInterceptor(new DefaultHeadersInterceptor())
+            .build();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
 
     // this is for the market place
     // you should have created the order from your backend and pass back the order id to app for the payment
-    private void fetchOrder(String accessToken, String orderID){
+    private void fetchOrder(String accessToken, String orderID) {
         // Good time to show dialog
         Request request = new Request(accessToken, orderID, new OrderRequestCallBack() {
             @Override
@@ -277,7 +304,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     *
      * Fetch Access token and unique transactionID from developers server
      */
     private void fetchTokenAndTransactionID() {
@@ -285,7 +311,6 @@ public class MainActivity extends AppCompatActivity {
             dialog.show();
         }
 
-        OkHttpClient client = new OkHttpClient();
         HttpUrl url = getHttpURLBuilder()
                 .addPathSegment("create")
                 .build();
@@ -371,10 +396,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         showToast("Checking transaction status");
-        OkHttpClient client = new OkHttpClient();
         HttpUrl.Builder builder = getHttpURLBuilder();
         builder.addPathSegment("status");
-        if (transactionID != null){
+        if (transactionID != null) {
             builder.addQueryParameter("transaction_id", transactionID);
         } else {
             builder.addQueryParameter("id", orderID);
@@ -453,7 +477,7 @@ public class MainActivity extends AppCompatActivity {
      * Will initiate a refund for a given transaction with given amount
      *
      * @param transactionID Unique identifier for the transaction
-     * @param amount    amount to be refunded
+     * @param amount        amount to be refunded
      */
     private void refundTheAmount(String transactionID, String amount) {
         if (accessToken == null || transactionID == null || amount == null) {
@@ -465,7 +489,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         showToast("Initiating a refund for - " + amount);
-        OkHttpClient client = new OkHttpClient();
         HttpUrl url = getHttpURLBuilder()
                 .addPathSegment("refund")
                 .addPathSegment("")
