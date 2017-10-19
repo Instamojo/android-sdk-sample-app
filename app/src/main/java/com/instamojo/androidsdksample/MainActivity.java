@@ -28,6 +28,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -316,7 +317,7 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         RequestBody body = new FormBody.Builder()
-                .add("env", currentEnv.toLowerCase())
+                .add("env", currentEnv.toLowerCase(Locale.US))
                 .build();
 
         okhttp3.Request request = new okhttp3.Request.Builder()
@@ -403,7 +404,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             builder.addQueryParameter("id", orderID);
         }
-        builder.addQueryParameter("env", currentEnv.toLowerCase());
+        builder.addQueryParameter("env", currentEnv.toLowerCase(Locale.US));
         HttpUrl url = builder.build();
 
         okhttp3.Request request = new okhttp3.Request.Builder()
@@ -495,7 +496,7 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         RequestBody body = new FormBody.Builder()
-                .add("env", currentEnv.toLowerCase())
+                .add("env", currentEnv.toLowerCase(Locale.US))
                 .add("transaction_id", transactionID)
                 .add("amount", amount)
                 .add("type", "PTH")
