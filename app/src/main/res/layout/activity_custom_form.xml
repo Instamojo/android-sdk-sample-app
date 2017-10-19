@@ -50,7 +50,7 @@
             android:layout_weight="3"
             android:hint="@string/card_holders_name"
             android:inputType="textPersonName"
-            android:singleLine="true" />
+            android:maxLines="1" />
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/card_cvv"
