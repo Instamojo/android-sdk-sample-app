@@ -461,7 +461,7 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         if (!finalStatus.equalsIgnoreCase("successful")) {
-                            showToast("Transaction still pending");
+                            showToast("Transaction not complete);
                             return;
                         }
 
