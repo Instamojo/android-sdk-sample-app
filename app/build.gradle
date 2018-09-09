@@ -46,8 +46,8 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.instamojo:android-sdk:1.2.6'
+    api fileTree(include: ['*.jar'], dir: 'libs')
+    api 'com.instamojo:android-sdk:1.2.6'
 
     //For Internal development
     //compile project (':android-sdk')
