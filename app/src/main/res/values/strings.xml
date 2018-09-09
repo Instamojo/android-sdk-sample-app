@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Android SDK Sample</string>
+    <string name="app_name">Instamojo Android SDK Sample</string>
     <string name="card_number">Card Number</string>
     <string name="mm_yy">MM/yy</string>
     <string name="card_holders_name">Name</string>
