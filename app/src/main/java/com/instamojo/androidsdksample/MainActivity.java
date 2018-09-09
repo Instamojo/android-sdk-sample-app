@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.instamojo.android.Instamojo;
 import com.instamojo.android.activities.PaymentDetailsActivity;
-import com.instamojo.android.callbacks.OrderRequestCallBack;
+import com.instamojo.android.callbacks.OrderRequestCallback;
 import com.instamojo.android.helpers.Constants;
 import com.instamojo.android.models.Errors;
 import com.instamojo.android.models.Order;
@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
     // you should have created the order from your backend and pass back the order id to app for the payment
     private void fetchOrder(String accessToken, String orderID) {
         // Good time to show dialog
-        Request request = new Request(accessToken, orderID, new OrderRequestCallBack() {
+        Request request = new Request(accessToken, orderID, new OrderRequestCallback() {
             @Override
             public void onFinish(final Order order, final Exception error) {
                 runOnUiThread(new Runnable() {
@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Validation is successful. Proceed
         dialog.show();
-        Request request = new Request(order, new OrderRequestCallBack() {
+        Request request = new Request(order, new OrderRequestCallback() {
             @Override
             public void onFinish(final Order order, final Exception error) {
                 runOnUiThread(new Runnable() {
