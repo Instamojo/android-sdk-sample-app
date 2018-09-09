@@ -14,7 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.instamojo.android.activities.PaymentActivity;
-import com.instamojo.android.callbacks.JusPayRequestCallback;
+import com.instamojo.android.callbacks.JuspayRequestCallback;
 import com.instamojo.android.helpers.Constants;
 import com.instamojo.android.models.Card;
 import com.instamojo.android.models.Errors;
@@ -133,7 +133,7 @@ public class CustomUIActivity extends AppCompatActivity {
     private void proceedWithCard(Order order, Card card) {
         final ProgressDialog dialog = ProgressDialog.show(this, "",
                 getString(com.instamojo.android.R.string.please_wait), true, false);
-        Request request = new Request(order, card, new JusPayRequestCallback() {
+        Request request = new Request(order, card, new JuspayRequestCallback() {
             @Override
             public void onFinish(final Bundle bundle, final Exception error) {
                 runOnUiThread(new Runnable() {
