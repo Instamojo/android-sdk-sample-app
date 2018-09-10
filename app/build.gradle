@@ -47,8 +47,9 @@ android {
 
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
-    api 'com.instamojo:android-sdk:1.2.6'
+    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+    // api 'com.instamojo:android-sdk:1.2.6'
 
     //For Internal development
-    //compile project (':android-sdk')
+    implementation project (':android-sdk')
 }
