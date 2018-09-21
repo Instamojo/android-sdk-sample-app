@@ -1,9 +1,9 @@
 package com.instamojo.androidsdksample;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatSpinner;
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         env_options.put("Production", "https://api.instamojo.com/");
     }
 
-    private ProgressDialog dialog;
+    private AlertDialog dialog;
     private AppCompatEditText nameBox, emailBox, phoneBox, amountBox, descriptionBox;
     private String currentEnv = null;
     private String accessToken = null;
@@ -111,10 +111,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        dialog = new ProgressDialog(this);
-        dialog.setIndeterminate(true);
-        dialog.setMessage("Please wait...");
-        dialog.setCancelable(false);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false); // if you want user to wait for some process to finish,
+        builder.setView(R.layout.layout_loading_dialog);
+        dialog = builder.create();
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

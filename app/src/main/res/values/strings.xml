@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Android SDK Sample</string>
+    <string name="app_name">Instamojo Android SDK Sample</string>
     <string name="card_number">Card Number</string>
     <string name="mm_yy">MM/yy</string>
     <string name="card_holders_name">Name</string>
@@ -11,4 +11,5 @@
     <string name="example_amount">10</string>
     <string name="test_description">Test description</string>
     <string name="pay">Pay</string>
+    <string name="loader_message">Please wait&#8230;</string>
 </resources>
