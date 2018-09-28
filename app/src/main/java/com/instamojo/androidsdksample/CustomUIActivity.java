@@ -1,8 +1,8 @@
 package com.instamojo.androidsdksample;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
@@ -26,10 +26,18 @@ import java.util.Collections;
 
 public class CustomUIActivity extends AppCompatActivity {
 
+    private AlertDialog dialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_custom_form);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false); // if you want user to wait for some process to finish,
+        builder.setView(R.layout.layout_loading_dialog);
+        dialog = builder.create();
+
         makeUI();
     }
 
@@ -131,8 +139,7 @@ public class CustomUIActivity extends AppCompatActivity {
     }
 
     private void proceedWithCard(Order order, Card card) {
-        final ProgressDialog dialog = ProgressDialog.show(this, "",
-                getString(com.instamojo.android.R.string.please_wait), true, false);
+        dialog.show();
         Request request = new Request(order, card, new JusPayRequestCallback() {
             @Override
             public void onFinish(final Bundle bundle, final Exception error) {
