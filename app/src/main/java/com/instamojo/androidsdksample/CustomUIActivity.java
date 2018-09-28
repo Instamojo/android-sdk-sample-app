@@ -105,8 +105,7 @@ public class CustomUIActivity extends AppCompatActivity {
             separator.setVisibility(View.GONE);
             netBankingSpinner.setVisibility(View.GONE);
         } else {
-            final ArrayList<String> banks = new ArrayList<>();
-            banks.addAll(order.getNetBankingOptions().getBanks().keySet());
+            final ArrayList<String> banks = new ArrayList<>(order.getNetBankingOptions().getBanks().keySet());
             Collections.sort(banks);
             banks.add(0, "Select a Bank");
             ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, banks);
