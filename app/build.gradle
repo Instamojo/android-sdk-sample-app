@@ -46,5 +46,5 @@ dependencies {
     api 'com.instamojo:android-sdk:1.2.6'
 
     //For Internal development
-    //compile project (':android-sdk')
+    //api project (':android-sdk')
 }
