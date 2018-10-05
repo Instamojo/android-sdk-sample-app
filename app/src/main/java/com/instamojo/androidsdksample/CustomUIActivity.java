@@ -14,7 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.instamojo.android.activities.PaymentActivity;
-import com.instamojo.android.callbacks.JusPayRequestCallback;
+import com.instamojo.android.callbacks.JuspayRequestCallback;
 import com.instamojo.android.helpers.Constants;
 import com.instamojo.android.models.Card;
 import com.instamojo.android.models.Errors;
@@ -123,7 +123,7 @@ public class CustomUIActivity extends AppCompatActivity {
                     Bundle bundle = new Bundle();
                     bundle.putString(Constants.URL, order.getNetBankingOptions().getUrl());
                     bundle.putString(Constants.POST_DATA, order.
-                            getNetBankingOptions().getPostData(order.getAuthToken(), bankCode));
+                            getNetBankingOptions().getPostData(bankCode));
                     startPaymentActivity(bundle);
                 }
 
@@ -139,7 +139,7 @@ public class CustomUIActivity extends AppCompatActivity {
 
     private void proceedWithCard(Order order, Card card) {
         dialog.show();
-        Request request = new Request(order, card, new JusPayRequestCallback() {
+        Request request = new Request(order, card, new JuspayRequestCallback() {
             @Override
             public void onFinish(final Bundle bundle, final Exception error) {
                 runOnUiThread(new Runnable() {
