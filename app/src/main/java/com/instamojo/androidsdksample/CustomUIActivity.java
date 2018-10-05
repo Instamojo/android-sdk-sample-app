@@ -62,16 +62,16 @@ public class CustomUIActivity extends AppCompatActivity {
             return;
         }
 
-        final AppCompatEditText cardNumber = (AppCompatEditText) findViewById(R.id.card_number);
-        final AppCompatEditText cardExpiryDate = (AppCompatEditText) findViewById(R.id.card_expiry_date);
+        final AppCompatEditText cardNumber = findViewById(R.id.card_number);
+        final AppCompatEditText cardExpiryDate = findViewById(R.id.card_expiry_date);
         cardNumber.setNextFocusDownId(R.id.card_expiry_date);
-        final AppCompatEditText cardHoldersName = (AppCompatEditText) findViewById(R.id.card_holder_name);
+        final AppCompatEditText cardHoldersName = findViewById(R.id.card_holder_name);
         cardExpiryDate.setNextFocusDownId(R.id.card_holder_name);
-        final AppCompatEditText cvv = (AppCompatEditText) findViewById(R.id.card_cvv);
+        final AppCompatEditText cvv = findViewById(R.id.card_cvv);
         cardHoldersName.setNextFocusDownId(R.id.card_cvv);
-        AppCompatButton proceed = (AppCompatButton) findViewById(R.id.proceed_with_card);
+        AppCompatButton proceed = findViewById(R.id.proceed_with_card);
         View separator = findViewById(R.id.net_banking_separator);
-        AppCompatSpinner netBankingSpinner = (AppCompatSpinner) findViewById(R.id.net_banking_spinner);
+        AppCompatSpinner netBankingSpinner = findViewById(R.id.net_banking_spinner);
 
         if (order.getCardOptions() == null) {
             //seems like card payment is not enabled

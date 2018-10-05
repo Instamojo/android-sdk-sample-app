@@ -82,18 +82,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button button = (Button) findViewById(R.id.pay);
-        nameBox = (AppCompatEditText) findViewById(R.id.name);
+        Button button = findViewById(R.id.pay);
+        nameBox = findViewById(R.id.name);
         nameBox.setSelection(nameBox.getText().toString().trim().length());
-        emailBox = (AppCompatEditText) findViewById(R.id.email);
+        emailBox = findViewById(R.id.email);
         emailBox.setSelection(emailBox.getText().toString().trim().length());
-        phoneBox = (AppCompatEditText) findViewById(R.id.phone);
+        phoneBox = findViewById(R.id.phone);
         phoneBox.setSelection(phoneBox.getText().toString().trim().length());
-        amountBox = (AppCompatEditText) findViewById(R.id.amount);
+        amountBox = findViewById(R.id.amount);
         amountBox.setSelection(amountBox.getText().toString().trim().length());
-        descriptionBox = (AppCompatEditText) findViewById(R.id.description);
+        descriptionBox = findViewById(R.id.description);
         descriptionBox.setSelection(descriptionBox.getText().toString().trim().length());
-        AppCompatSpinner envSpinner = (AppCompatSpinner) findViewById(R.id.env_spinner);
+        AppCompatSpinner envSpinner = findViewById(R.id.env_spinner);
         final ArrayList<String> envs = new ArrayList<>(env_options.keySet());
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, envs);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
