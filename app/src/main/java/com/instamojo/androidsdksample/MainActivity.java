@@ -30,12 +30,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 
-import okhttp3.Callback;
-import okhttp3.FormBody;
-import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -44,26 +40,26 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
-//    private static class DefaultHeadersInterceptor implements Interceptor {
-//        @Override
-//        public Response intercept(Chain chain) throws IOException {
-//            return chain.proceed(chain.request()
-//                    .newBuilder()
-//                    .header("User-Agent", getUserAgent())
-//                    .header("Referer", getReferer())
-//                    .build());
-//        }
-//
-//        private static String getUserAgent() {
-//            return "instamojo-android-sdk-sample/" + BuildConfig.VERSION_NAME
-//                    + " android/" + Build.VERSION.RELEASE
-//                    + " " + Build.BRAND + "/" + Build.MODEL;
-//        }
-//
-//        private static String getReferer() {
-//            return "android-app://" + BuildConfig.APPLICATION_ID;
-//        }
-//    }
+    private static class DefaultHeadersInterceptor implements Interceptor {
+        @Override
+        public okhttp3.Response intercept(Chain chain) throws IOException {
+            return chain.proceed(chain.request()
+                    .newBuilder()
+                    .header("User-Agent", getUserAgent())
+                    .header("Referer", getReferer())
+                    .build());
+        }
+
+        private static String getUserAgent() {
+            return "instamojo-android-sdk-sample/" + BuildConfig.VERSION_NAME
+                    + " android/" + Build.VERSION.RELEASE
+                    + " " + Build.BRAND + "/" + Build.MODEL;
+        }
+
+        private static String getReferer() {
+            return "android-app://" + BuildConfig.APPLICATION_ID;
+        }
+    }
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final HashMap<String, String> env_options = new HashMap<>();
@@ -76,11 +72,10 @@ public class MainActivity extends AppCompatActivity {
     private AlertDialog dialog;
     private AppCompatEditText nameBox, emailBox, phoneBox, amountBox, descriptionBox;
     private String currentEnv = null;
-    private String accessToken = null;
 
-//    private static OkHttpClient client = new OkHttpClient.Builder()
-//            .addInterceptor(new DefaultHeadersInterceptor())
-//            .build();
+    private static OkHttpClient httpClient = new OkHttpClient.Builder()
+            .addInterceptor(new DefaultHeadersInterceptor())
+            .build();
 
     private MyBackendService myBackendService;
 
@@ -124,7 +119,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize the backend service client
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8080")
+                .client(httpClient)
+                .baseUrl("https://sample-sdk-server.instamojo.com")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         myBackendService = retrofit.create(MyBackendService.class);
@@ -143,11 +139,12 @@ public class MainActivity extends AppCompatActivity {
     private void createOrderOnServer() {
         GetOrderIDRequest request = new GetOrderIDRequest();
         request.setEnv(currentEnv);
-        request.setBuyerName("Vijith");
-        request.setBuyerEmail("vijith@instamojo.com");
-        request.setBuyerPhone("9999999999");
-        request.setDescription("some description");
-        request.setAmount("10.0");
+        request.setBuyerName(nameBox.getText().toString());
+        request.setBuyerEmail(emailBox.getText().toString());
+        request.setBuyerPhone(phoneBox.getText().toString());
+        request.setDescription(descriptionBox.getText().toString());
+        request.setAmount(amountBox.getText().toString());
+        
         Call<GetOrderIDResponse> getOrderIDCall = myBackendService.createOrder(request);
         getOrderIDCall.enqueue(new retrofit2.Callback<GetOrderIDResponse>() {
             @Override
