@@ -1,2 +1,2 @@
-include ':app' //, ':android-sdk'
-//project (':android-sdk').projectDir = new File ('../android-sdk/android-sdk')
+include ':app', ':android-sdk'
+project (':android-sdk').projectDir = new File ('../instamojo-android-sdk/android-sdk')
