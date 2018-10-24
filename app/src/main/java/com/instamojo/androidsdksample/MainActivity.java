@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         request.setBuyerPhone(phoneBox.getText().toString());
         request.setDescription(descriptionBox.getText().toString());
         request.setAmount(amountBox.getText().toString());
-        
+
         Call<GetOrderIDResponse> getOrderIDCall = myBackendService.createOrder(request);
         getOrderIDCall.enqueue(new retrofit2.Callback<GetOrderIDResponse>() {
             @Override
