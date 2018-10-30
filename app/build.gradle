@@ -44,9 +44,10 @@ android {
 
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
-    api 'com.instamojo:instamojo-android-sdk:2.0.0'
+    implementation 'com.instamojo:android-sdk:2.0.0'
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+    api 'com.android.support:appcompat-v7:27.1.1'
 
     //For Internal development
 //    api project(':android-sdk')
