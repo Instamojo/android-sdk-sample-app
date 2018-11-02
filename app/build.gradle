@@ -29,6 +29,7 @@ android {
             minifyEnabled true
             debuggable true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            testCoverageEnabled false
         }
     }
 
@@ -43,8 +44,10 @@ android {
 
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
-    api 'com.instamojo:android-sdk:1.2.6'
+    implementation 'com.instamojo:android-sdk:2.0.1'
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
 
     //For Internal development
-    //api project (':android-sdk')
+//    api project(':android-sdk')
 }
