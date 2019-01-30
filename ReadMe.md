@@ -1,3 +1,5 @@
+## This repo is unmaintained. Please find the latest sample app implementation within [Instamojo Android SDK](https://github.com/Instamojo/instamojo-android-sdk) codebase (under the folder `sample-app`)
+
 # Android SDK Sample Documentation
 
 ## Why Sample App?
